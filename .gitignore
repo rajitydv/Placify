@@ -1,0 +1,24 @@
+# Compiled Java class files and build artifacts
+backend/target/
+**/target/
+*.class
+
+# Log files
+*.log
+logs/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.DS_Store
+
+# Temporary files
+temp/
+temp_unzip/
+*.zip
+
+# Operating System Files
+Thumbs.db
+Desktop.ini

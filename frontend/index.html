@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Placify - A modern, simple placement preparation tracker for college students to monitor coding questions, aptitude drills, mock tests, and daily study goals.">
+    <title>Placify – Placement Preparation Tracker</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-theme">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>Placify</h1>
+                    <span class="brand-tagline">Placement Prep Tracker</span>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="nav-links">
+                <button class="nav-btn active" data-tab="dashboard-tab" id="nav-dashboard">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-tab="activities-tab" id="nav-activities">
+                    <i class="fa-solid fa-list-check"></i> Activities
+                </button>
+                <button class="nav-btn" data-tab="goals-tab" id="nav-goals">
+                    <i class="fa-solid fa-bullseye"></i> Daily Goals
+                </button>
+                <button class="nav-btn" data-tab="analytics-tab" id="nav-analytics">
+                    <i class="fa-solid fa-chart-line"></i> Analytics
+                </button>
+            </nav>
+
+            <!-- Navbar Actions -->
+            <div class="nav-actions">
+                <!-- Live DB Status Badge -->
+                <div class="status-badge" id="db-status-badge" title="Backend & Database Status">
+                    <span class="status-dot pulsing"></span>
+                    <span id="db-status-text">Checking API...</span>
+                </div>
+
+                <button class="btn btn-primary" id="btn-open-add-activity" title="Log a new preparation activity">
+                    <i class="fa-solid fa-plus"></i> <span>Log Activity</span>
+                </button>
+
+                <!-- Theme Toggle -->
+                <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark mode">
+                    <i class="fa-solid fa-sun" id="theme-icon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application Container -->
+    <main class="main-content">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: DASHBOARD -->
+        <!-- ========================================== -->
+        <section class="tab-pane active" id="dashboard-tab">
+            <!-- Hero Banner -->
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <div class="hero-badge"><i class="fa-solid fa-bolt"></i> Campus Placement Sprint</div>
+                    <h2 class="hero-title">Track your journey to your dream offer! 🚀</h2>
+                    <p class="hero-subtitle">Consistent daily practice in DSA, Aptitude, Core CS, and Mocks transforms preparation into success.</p>
+                </div>
+                <div class="hero-stats">
+                    <div class="mini-stat">
+                        <span class="mini-label">Today's Date</span>
+                        <span class="mini-value" id="current-date-display">Today</span>
+                    </div>
+                    <div class="mini-stat">
+                        <span class="mini-label">Total Study Time</span>
+                        <span class="mini-value" id="total-study-time">0h 0m</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metric Cards Grid -->
+            <div class="metrics-grid">
+                <!-- Card 1: Coding -->
+                <div class="metric-card card-coding" id="card-coding">
+                    <div class="metric-header">
+                        <div class="metric-icon-box icon-coding">
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <span class="metric-trend"><i class="fa-solid fa-arrow-trend-up"></i> Target: 60+</span>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-label">Coding Questions Solved</span>
+                        <h3 class="metric-value" id="stat-coding-questions">0</h3>
+                        <div class="metric-bar-bg">
+                            <div class="metric-bar-fill fill-coding" id="bar-coding" style="width: 0%"></div>
+                        </div>
+                        <span class="metric-hint" id="stat-coding-hint">DSA & LeetCode Practice</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Aptitude -->
+                <div class="metric-card card-aptitude" id="card-aptitude">
+                    <div class="metric-header">
+                        <div class="metric-icon-box icon-aptitude">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <span class="metric-trend"><i class="fa-solid fa-arrow-trend-up"></i> Target: 50+</span>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-label">Aptitude Questions</span>
+                        <h3 class="metric-value" id="stat-aptitude-questions">0</h3>
+                        <div class="metric-bar-bg">
+                            <div class="metric-bar-fill fill-aptitude" id="bar-aptitude" style="width: 0%"></div>
+                        </div>
+                        <span class="metric-hint">Quant, Logical & Verbal Drills</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Mock Tests -->
+                <div class="metric-card card-mocks" id="card-mocks">
+                    <div class="metric-header">
+                        <div class="metric-icon-box icon-mocks">
+                            <i class="fa-solid fa-file-signature"></i>
+                        </div>
+                        <span class="metric-trend"><i class="fa-solid fa-bullseye"></i> Target: 5+</span>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-label">Mock Tests Completed</span>
+                        <h3 class="metric-value" id="stat-mock-tests">0</h3>
+                        <div class="metric-bar-bg">
+                            <div class="metric-bar-fill fill-mocks" id="bar-mocks" style="width: 0%"></div>
+                        </div>
+                        <span class="metric-hint">Full-Length Campus Assessments</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: Overall Readiness Progress -->
+                <div class="metric-card card-readiness" id="card-readiness">
+                    <div class="metric-header">
+                        <div class="metric-icon-box icon-readiness">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <span class="readiness-level-badge" id="stat-readiness-level">Evaluating</span>
+                    </div>
+                    <div class="metric-body">
+                        <span class="metric-label">Placement Readiness</span>
+                        <div class="readiness-score-row">
+                            <h3 class="metric-value" id="stat-overall-progress">0%</h3>
+                            <div class="progress-ring-mini">
+                                <svg width="44" height="44" viewBox="0 0 44 44">
+                                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
+                                    <circle class="ring-progress" id="svg-ring-progress" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="113.1"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-bar-fill fill-readiness" id="bar-overall" style="width: 0%"></div>
+                        </div>
+                        <span class="metric-hint">Weighted prep completion index</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Column Dashboard Layout -->
+            <div class="dashboard-columns">
+                <!-- Left: Daily Study Goals Widget -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon-tag"><i class="fa-solid fa-list-check"></i></div>
+                            <div>
+                                <h3 class="dash-card-title">Today's Study Goals</h3>
+                                <p class="dash-card-desc">Check off tasks as you finish them today</p>
+                            </div>
+                        </div>
+                        <div class="goals-progress-pill">
+                            <span id="dash-goals-ratio">0 / 0</span> completed
+                        </div>
+                    </div>
+
+                    <div class="goal-completion-bar-wrapper">
+                        <div class="goal-completion-bar">
+                            <div class="goal-completion-fill" id="dash-goals-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="goal-percentage" id="dash-goals-percent">0%</span>
+                    </div>
+
+                    <!-- Today's Goals List -->
+                    <div class="dash-goals-list" id="dash-today-goals-list">
+                        <div class="loading-state">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Loading goals...
+                        </div>
+                    </div>
+
+                    <div class="dash-card-footer">
+                        <button class="btn btn-secondary btn-sm" id="btn-quick-add-goal">
+                            <i class="fa-solid fa-plus"></i> Add New Goal
+                        </button>
+                        <button class="btn btn-ghost btn-sm" id="btn-view-all-goals">
+                            View All Goals <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Recent Activities Widget -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon-tag icon-blue"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                            <div>
+                                <h3 class="dash-card-title">Recent Activities</h3>
+                                <p class="dash-card-desc">Latest solved problems, tests & revisions</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-ghost btn-sm" id="btn-view-all-activities">
+                            View All <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="recent-activities-list" id="dash-recent-activities-list">
+                        <div class="loading-state">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Loading activities...
+                        </div>
+                    </div>
+
+                    <div class="dash-card-footer">
+                        <button class="btn btn-primary btn-sm w-100" id="btn-dash-log-activity">
+                            <i class="fa-solid fa-plus"></i> Log Another Activity
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Chart Preview on Dashboard -->
+            <div class="dash-card mt-4">
+                <div class="dash-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-tag icon-purple"><i class="fa-solid fa-chart-column"></i></div>
+                        <div>
+                            <h3 class="dash-card-title">Preparation Breakdown</h3>
+                            <p class="dash-card-desc">Visual distribution across categories & difficulty levels</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" id="btn-goto-analytics">
+                        Full Analytics <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </button>
+                </div>
+                <div class="dash-charts-grid">
+                    <div class="chart-box">
+                        <h4 class="chart-box-title">Activity by Category</h4>
+                        <div class="canvas-container">
+                            <canvas id="dashCategoryChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-box">
+                        <h4 class="chart-box-title">Questions by Difficulty</h4>
+                        <div class="canvas-container">
+                            <canvas id="dashDifficultyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: ACTIVITIES MANAGEMENT (CRUD) -->
+        <!-- ========================================== -->
+        <section class="tab-pane" id="activities-tab">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Preparation Activities</h2>
+                    <p class="section-subtitle">Manage all your coding problems, aptitude tests, mock tests, and subject revisions.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-table-add-activity">
+                    <i class="fa-solid fa-plus"></i> Add Activity
+                </button>
+            </div>
+
+            <!-- Filters & Search Toolbar -->
+            <div class="toolbar-card">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="filter-search" class="search-input" placeholder="Search by title, topic, platform, or notes...">
+                    <button class="clear-search-btn" id="btn-clear-search" style="display: none;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="filter-controls">
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <label for="filter-category"><i class="fa-solid fa-layer-group"></i> Category:</label>
+                        <select id="filter-category" class="filter-select">
+                            <option value="All">All Categories</option>
+                            <option value="Coding">Coding (DSA)</option>
+                            <option value="Aptitude">Aptitude</option>
+                            <option value="Mock Test">Mock Test</option>
+                            <option value="Core CS">Core CS Subjects</option>
+                            <option value="Resume/HR">Resume / HR Round</option>
+                        </select>
+                    </div>
+
+                    <!-- Difficulty Filter -->
+                    <div class="filter-group">
+                        <label for="filter-difficulty"><i class="fa-solid fa-signal"></i> Difficulty:</label>
+                        <select id="filter-difficulty" class="filter-select">
+                            <option value="All">All Difficulties</option>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="filter-group">
+                        <label for="filter-status"><i class="fa-solid fa-circle-check"></i> Status:</label>
+                        <select id="filter-status" class="filter-select">
+                            <option value="All">All Statuses</option>
+                            <option value="Completed">Completed</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Needs Revision">Needs Revision</option>
+                        </select>
+                    </div>
+
+                    <!-- Reset Filters Button -->
+                    <button class="btn btn-secondary btn-icon" id="btn-reset-filters" title="Reset all filters">
+                        <i class="fa-solid fa-arrow-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Activities Table Card -->
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="activities-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Title & Topic</th>
+                                <th>Category</th>
+                                <th>Platform</th>
+                                <th>Difficulty</th>
+                                <th>Questions / Score</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activities-table-body">
+                            <!-- Populated dynamically via app.js -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table Empty / No Results State -->
+                <div class="table-empty-state" id="activities-empty-state" style="display: none;">
+                    <div class="empty-icon"><i class="fa-solid fa-folder-open"></i></div>
+                    <h3>No activities found</h3>
+                    <p>Try adjusting your search filters or log your first preparation activity.</p>
+                    <button class="btn btn-primary" id="btn-empty-add-activity">
+                        <i class="fa-solid fa-plus"></i> Log Activity
+                    </button>
+                </div>
+
+                <!-- Table Footer Counter -->
+                <div class="table-footer">
+                    <span id="activities-count-display">Showing 0 activities</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: DAILY GOALS TRACKER -->
+        <!-- ========================================== -->
+        <section class="tab-pane" id="goals-tab">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Daily Study Goals</h2>
+                    <p class="section-subtitle">Set daily targets, stay accountable, and check off tasks as you finish them.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-open-add-goal">
+                    <i class="fa-solid fa-plus"></i> New Daily Goal
+                </button>
+            </div>
+
+            <!-- Goal Progress Banner -->
+            <div class="goals-summary-card">
+                <div class="goals-summary-info">
+                    <span class="goals-date-pill" id="goals-today-pill">Today's Goals</span>
+                    <h3 class="goals-headline"><span id="goals-completed-stat">0</span> of <span id="goals-total-stat">0</span> goals completed</h3>
+                    <p class="goals-subtext">Achieve consistency every day to build placement momentum.</p>
+                </div>
+                <div class="goals-summary-gauge">
+                    <div class="gauge-percentage" id="goals-gauge-percent">0%</div>
+                    <div class="gauge-label">Done Today</div>
+                </div>
+            </div>
+
+            <!-- Goals List Grid -->
+            <div class="goals-grid" id="all-goals-grid">
+                <!-- Dynamically populated via app.js -->
+            </div>
+
+            <!-- Empty Goals State -->
+            <div class="table-empty-state" id="goals-empty-state" style="display: none;">
+                <div class="empty-icon"><i class="fa-solid fa-bullseye"></i></div>
+                <h3>No study goals set yet</h3>
+                <p>Create your first daily goal to plan your placement practice effectively.</p>
+                <button class="btn btn-primary" id="btn-empty-add-goal">
+                    <i class="fa-solid fa-plus"></i> Add First Goal
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 4: ANALYTICS & CHARTS -->
+        <!-- ========================================== -->
+        <section class="tab-pane" id="analytics-tab">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Placement Analytics & Charts</h2>
+                    <p class="section-subtitle">Detailed breakdown of your preparation trajectory and readiness indices.</p>
+                </div>
+                <button class="btn btn-secondary" id="btn-refresh-analytics">
+                    <i class="fa-solid fa-rotate"></i> Refresh Data
+                </button>
+            </div>
+
+            <!-- Charts 2x2 Grid -->
+            <div class="analytics-grid">
+                <!-- Chart 1: Category Distribution -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon-tag icon-blue"><i class="fa-solid fa-chart-pie"></i></div>
+                            <div>
+                                <h3 class="dash-card-title">Category Distribution</h3>
+                                <p class="dash-card-desc">Proportion of activities across different areas</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="canvas-container-lg">
+                        <canvas id="chartCategoryDetailed"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Difficulty Breakdown -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon-tag icon-green"><i class="fa-solid fa-chart-bar"></i></div>
+                            <div>
+                                <h3 class="dash-card-title">Difficulty Distribution</h3>
+                                <p class="dash-card-desc">Easy vs Medium vs Hard problem ratio</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="canvas-container-lg">
+                        <canvas id="chartDifficultyDetailed"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 3: Status Breakdown -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon-tag icon-purple"><i class="fa-solid fa-circle-notch"></i></div>
+                            <div>
+                                <h3 class="dash-card-title">Completion Status</h3>
+                                <p class="dash-card-desc">Completed vs In Progress vs Revision Needed</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="canvas-container-lg">
+                        <canvas id="chartStatusDetailed"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 4: Readiness Targets & Benchmarks -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <div class="card-title-group">
+                            <div class="card-icon-tag icon-orange"><i class="fa-solid fa-sliders"></i></div>
+                            <div>
+                                <h3 class="dash-card-title">Readiness Target Benchmarks</h3>
+                                <p class="dash-card-desc">Current progress vs Recommended campus goals</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="benchmarks-list">
+                        <div class="benchmark-item">
+                            <div class="benchmark-header">
+                                <span class="benchmark-title"><i class="fa-solid fa-code"></i> Coding DSA Questions</span>
+                                <span class="benchmark-val" id="bench-coding-val">0 / 60</span>
+                            </div>
+                            <div class="metric-bar-bg">
+                                <div class="metric-bar-fill fill-coding" id="bench-coding-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="benchmark-item">
+                            <div class="benchmark-header">
+                                <span class="benchmark-title"><i class="fa-solid fa-brain"></i> Aptitude Practice Problems</span>
+                                <span class="benchmark-val" id="bench-aptitude-val">0 / 50</span>
+                            </div>
+                            <div class="metric-bar-bg">
+                                <div class="metric-bar-fill fill-aptitude" id="bench-aptitude-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="benchmark-item">
+                            <div class="benchmark-header">
+                                <span class="benchmark-title"><i class="fa-solid fa-file-signature"></i> Full Mock Assessments</span>
+                                <span class="benchmark-val" id="bench-mock-val">0 / 5</span>
+                            </div>
+                            <div class="metric-bar-bg">
+                                <div class="metric-bar-fill fill-mocks" id="bench-mock-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="benchmark-item">
+                            <div class="benchmark-header">
+                                <span class="benchmark-title"><i class="fa-solid fa-check-double"></i> Daily Goal Consistency</span>
+                                <span class="benchmark-val" id="bench-goal-val">0%</span>
+                            </div>
+                            <div class="metric-bar-bg">
+                                <div class="metric-bar-fill fill-readiness" id="bench-goal-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL 1: ADD / EDIT ACTIVITY -->
+    <!-- ========================================== -->
+    <div class="modal-overlay" id="activity-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon-badge"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <h3 class="modal-title" id="activity-modal-title">Log Preparation Activity</h3>
+                </div>
+                <button class="modal-close-btn" id="btn-close-activity-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="activity-form" class="modal-form">
+                <input type="hidden" id="activity-id">
+
+                <div class="form-group">
+                    <label for="activity-title" class="form-label">Activity Title <span class="required">*</span></label>
+                    <input type="text" id="activity-title" class="form-input" placeholder="e.g. Two Sum & 3Sum - Two Pointer Technique" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-half">
+                        <label for="activity-category" class="form-label">Category <span class="required">*</span></label>
+                        <select id="activity-category" class="form-input" required>
+                            <option value="Coding">Coding (DSA)</option>
+                            <option value="Aptitude">Aptitude (Quant/Logical)</option>
+                            <option value="Mock Test">Mock Test</option>
+                            <option value="Core CS">Core CS Subjects (OS/DBMS/CN)</option>
+                            <option value="Resume/HR">Resume & HR Prep</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-half">
+                        <label for="activity-topic" class="form-label">Topic / Sub-topic</label>
+                        <input type="text" id="activity-topic" class="form-input" placeholder="e.g. Arrays, Trees, Profit & Loss, DBMS">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-half">
+                        <label for="activity-platform" class="form-label">Platform / Source</label>
+                        <input type="text" id="activity-platform" class="form-input" placeholder="e.g. LeetCode, GFG, IndiaBIX, College Portal">
+                    </div>
+
+                    <div class="form-group col-half">
+                        <label for="activity-difficulty" class="form-label">Difficulty</label>
+                        <select id="activity-difficulty" class="form-input">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-third">
+                        <label for="activity-status" class="form-label">Status</label>
+                        <select id="activity-status" class="form-input">
+                            <option value="Completed" selected>Completed</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Needs Revision">Needs Revision</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-third">
+                        <label for="activity-questions" class="form-label">Questions Solved / Score</label>
+                        <input type="number" id="activity-questions" class="form-input" min="0" value="1">
+                    </div>
+
+                    <div class="form-group col-third">
+                        <label for="activity-duration" class="form-label">Duration (Mins)</label>
+                        <input type="number" id="activity-duration" class="form-input" min="5" step="5" value="30">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="activity-date" class="form-label">Date</label>
+                    <input type="date" id="activity-date" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="activity-notes" class="form-label">Notes, Approach & Formulas</label>
+                    <textarea id="activity-notes" class="form-textarea" rows="3" placeholder="Key takeaways, time/space complexity, formula shortcuts, or link..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-activity">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-activity">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Activity
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 2: ADD / EDIT DAILY GOAL -->
+    <!-- ========================================== -->
+    <div class="modal-overlay" id="goal-modal">
+        <div class="modal-card modal-card-sm">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon-badge icon-goal"><i class="fa-solid fa-bullseye"></i></div>
+                    <h3 class="modal-title" id="goal-modal-title">Add Daily Goal</h3>
+                </div>
+                <button class="modal-close-btn" id="btn-close-goal-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="goal-form" class="modal-form">
+                <input type="hidden" id="goal-id">
+
+                <div class="form-group">
+                    <label for="goal-title" class="form-label">Goal Title <span class="required">*</span></label>
+                    <input type="text" id="goal-title" class="form-input" placeholder="e.g. Solve 3 LeetCode Mediums on Graphs" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-half">
+                        <label for="goal-category" class="form-label">Category</label>
+                        <select id="goal-category" class="form-input">
+                            <option value="Coding">Coding</option>
+                            <option value="Aptitude">Aptitude</option>
+                            <option value="Mock Test">Mock Test</option>
+                            <option value="Core CS">Core CS</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-half">
+                        <label for="goal-target-date" class="form-label">Target Date</label>
+                        <input type="date" id="goal-target-date" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-half">
+                        <label for="goal-target-count" class="form-label">Target Items</label>
+                        <input type="number" id="goal-target-count" class="form-input" min="1" value="1">
+                    </div>
+
+                    <div class="form-group col-half">
+                        <label for="goal-completed-count" class="form-label">Completed So Far</label>
+                        <input type="number" id="goal-completed-count" class="form-input" min="0" value="0">
+                    </div>
+                </div>
+
+                <div class="form-group checkbox-row">
+                    <input type="checkbox" id="goal-completed" class="form-checkbox">
+                    <label for="goal-completed" class="checkbox-label">Mark as completed already</label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-goal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-goal">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Goal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 3: VIEW ACTIVITY DETAILS -->
+    <!-- ========================================== -->
+    <div class="modal-overlay" id="view-activity-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon-badge"><i class="fa-solid fa-circle-info"></i></div>
+                    <h3 class="modal-title">Activity Details</h3>
+                </div>
+                <button class="modal-close-btn" id="btn-close-view-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="view-modal-content">
+                <div class="view-header-row">
+                    <h2 class="view-title" id="view-title">-</h2>
+                    <span class="badge" id="view-status-badge">-</span>
+                </div>
+
+                <div class="view-tags-row">
+                    <span class="view-tag" id="view-category-tag"><i class="fa-solid fa-layer-group"></i> -</span>
+                    <span class="view-tag" id="view-difficulty-tag"><i class="fa-solid fa-signal"></i> -</span>
+                    <span class="view-tag" id="view-platform-tag"><i class="fa-solid fa-laptop-code"></i> -</span>
+                    <span class="view-tag" id="view-date-tag"><i class="fa-regular fa-calendar"></i> -</span>
+                </div>
+
+                <div class="view-metrics-box">
+                    <div class="view-metric-col">
+                        <span class="view-metric-lbl">Topic</span>
+                        <strong class="view-metric-val" id="view-topic">-</strong>
+                    </div>
+                    <div class="view-metric-col">
+                        <span class="view-metric-lbl">Questions / Score</span>
+                        <strong class="view-metric-val" id="view-questions">-</strong>
+                    </div>
+                    <div class="view-metric-col">
+                        <span class="view-metric-lbl">Study Time</span>
+                        <strong class="view-metric-val" id="view-duration">-</strong>
+                    </div>
+                </div>
+
+                <div class="view-notes-section">
+                    <h4>Notes & Approach</h4>
+                    <p class="view-notes-text" id="view-notes">No notes provided.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btn-view-close">Close</button>
+                <button type="button" class="btn btn-primary" id="btn-view-edit">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit Activity
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+</body>
+</html>
