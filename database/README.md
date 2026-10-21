@@ -8,25 +8,26 @@ This directory contains the SQL script for setting up the MySQL database used by
 
 ### Method 1: Using MySQL Command Line Client (Fastest)
 
-1. Open **MySQL Command Line Client** from your Start menu or Terminal.
-2. Enter your MySQL root password.
-3. Run the following command (replace with your actual file path):
-
-```sql
-source c:/Users/yadav/OneDrive/Desktop/Placify/database/placify_db.sql;
-```
-
-Or from Windows PowerShell / Command Prompt:
+1. Open terminal in the project root directory (`Placify`).
+2. Run:
 
 ```bash
 mysql -u root -p < database/placify_db.sql
+```
+
+*(Enter your MySQL root password when prompted).*
+
+Or if you are already inside the MySQL CLI prompt:
+
+```sql
+source database/placify_db.sql;
 ```
 
 ---
 
 ### Method 2: Using MySQL Workbench
 
-1. Open **MySQL Workbench** and connect to your local MySQL connection (`localhost:3306`).
+1. Open **MySQL Workbench** and connect to your local MySQL instance (`localhost:3306`).
 2. Go to `File` > `Open SQL Script...` (or press `Ctrl + Shift + O`).
 3. Select `database/placify_db.sql`.
 4. Click the **Execute (Lightning icon)** button to run the script.
@@ -36,9 +37,9 @@ mysql -u root -p < database/placify_db.sql
 
 ### Method 3: Automatic Auto-Creation via Spring Boot
 
-If your MySQL service is running and credentials in `backend/src/main/resources/application.properties` match your MySQL setup:
+If your MySQL service is running and credentials in `backend/src/main/resources/application.properties` match your local MySQL configuration:
 - Spring Boot and Hibernate will **automatically create `placify_db` and all tables** on first startup!
-- Initial placement prep records are automatically seeded.
+- Initial realistic placement preparation records are automatically seeded.
 
 ---
 
